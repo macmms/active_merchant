@@ -233,9 +233,9 @@ paypal_certificate:
     PASTE YOUR PEM FILE HERE
 
 paypal_signature:
-  login: LOGIN
-  password: PASSWORD
-  signature: SIGNATURE
+  login: 'dev_1329924697_biz_api1.maintainify.com'
+  password: '1329924735'
+  signature: 'AFcWxV21C7fd0v3bYYYRCpSSRl31AzerlBBSA75djWxzrisdvZRDdOlf'
 
 pay_secure:
   login: LOGIN

@@ -8,7 +8,7 @@ module ActiveMerchant #:nodoc:
         base.cattr_accessor :signature
       end
       
-      API_VERSION = '72'
+      API_VERSION = '62.0'
       
       URLS = {
         :test => { :certificate => 'https://api.sandbox.paypal.com/2.0/',
@@ -82,6 +82,24 @@ module ActiveMerchant #:nodoc:
         @options[:test] || Base.gateway_mode == :test
       end
 
+      def create_profile(token, options = {})
+        requires!(options, :description, :start_date, :frequency, :amount)
+
+        commit 'CreateRecurringPaymentsProfile', build_create_profile_request(token, options)
+      end
+
+      def get_profile_details(profile_id)
+        commit 'GetRecurringPaymentsProfileDetails', build_get_profile_details_request(profile_id)
+      end
+
+      def update_profile(profile_id, options = {})
+        commit 'UpdateRecurringPaymentsProfile', build_change_profile_request(profile_id, options)
+      end
+
+      def suspend_profile(profile_id, options = {})
+        commit 'ManageRecurringPaymentsProfileStatus', build_manage_profile_request(profile_id, 'Suspend', options)
+      end
+
       def reauthorize(money, authorization, options = {})
         commit 'DoReauthorization', build_reauthorize_request(money, authorization, options)
       end
@@ -118,6 +136,118 @@ module ActiveMerchant #:nodoc:
       end
 
       private
+
+      def build_create_profile_request(token, options)
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'CreateRecurringPaymentsProfileReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'CreateRecurringPaymentsProfileRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'n2:CreateRecurringPaymentsProfileRequestDetails' do
+              xml.tag! 'Token', token unless token.blank?
+              if options[:credit_card]
+               add_credit_card(xml, options[:credit_card], (options[:billing_address] || options[:address]), options)
+              end
+              xml.tag! 'n2:RecurringPaymentsProfileDetails' do
+                xml.tag! 'n2:BillingStartDate', (options[:start_date].is_a?(Date) ? options[:start_date].to_time : options[:start_date]).utc.iso8601
+                xml.tag! 'n2:ProfileReference', options[:reference] unless options[:reference].blank?
+                xml.tag! 'n2:SubscriberName', options[:subscriber_name] unless options[:subscriber_name].blank?
+                add_address(xml, 'n2:SubscriberShippingAddress', (options[:shipping_address] || options[:address])) if options[:shipping_address] || options[:address]
+              end
+              xml.tag! 'n2:ScheduleDetails' do
+                xml.tag! 'n2:Description', options[:description]
+                xml.tag! 'n2:PaymentPeriod' do
+                  xml.tag! 'n2:BillingPeriod', options[:period] || 'Month'
+                  xml.tag! 'n2:BillingFrequency', options[:frequency]
+                  xml.tag! 'n2:TotalBillingCycles', options[:cycles] unless options[:cycles].blank?
+                  xml.tag! 'n2:Amount', amount(options[:amount]), 'currencyID' => options[:currency] || 'USD'
+                  xml.tag! 'n2:TaxAmount', amount(options[:tax_amount] || 0), 'currencyID' => options[:currency] || 'USD'
+                end
+                if !options[:trialamount].blank?
+                  xml.tag! 'n2:TrialPeriod' do
+                    xml.tag! 'n2:BillingPeriod', options[:trialperiod] || 'Month'
+                    xml.tag! 'n2:BillingFrequency', options[:trialfrequency]
+                    xml.tag! 'n2:TotalBillingCycles', options[:trialcycles] || 1
+                    xml.tag! 'n2:Amount', amount(options[:trialamount]), 'currencyID' => options[:currency] || 'USD'
+                  end        
+                end
+                if !options[:initial_amount].blank?
+                  xml.tag! 'n2:ActivationDetails' do
+                    xml.tag! 'n2:InitialAmount', amount(options[:initial_amount]), 'currencyID' => options[:currency] || 'USD'
+                    xml.tag! 'n2:FailedInitialAmountAction', options[:continue_on_failure] ? 'ContinueOnFailure' : 'CancelOnFailure'
+                  end        
+                end
+                xml.tag! 'n2:MaxFailedPayments', options[:max_failed_payments] unless options[:max_failed_payments].blank?
+                xml.tag! 'n2:AutoBillOutstandingAmount', options[:auto_bill_outstanding] ? 'AddToNextBilling' : 'NoAutoBill'
+              end
+            end
+          end
+        end
+        xml.target!
+      end
+
+
+
+      def build_get_profile_details_request(profile_id)
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'GetRecurringPaymentsProfileDetailsReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'GetRecurringPaymentsProfileDetailsRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'ProfileID', profile_id
+          end
+        end
+
+        xml.target!
+      end
+
+
+      def build_change_profile_request(profile_id, options)
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'UpdateRecurringPaymentsProfileReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'UpdateRecurringPaymentsProfileRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'n2:UpdateRecurringPaymentsProfileRequestDetails' do
+              xml.tag! 'ProfileID', profile_id
+              if options[:credit_card]
+               add_credit_card(xml, options[:credit_card], options[:address], options)
+              end
+              xml.tag! 'n2:Note', options[:note] unless options[:note].blank?
+              xml.tag! 'n2:Description', options[:description] unless options[:description].blank?
+              xml.tag! 'n2:ProfileReference', options[:reference] unless options[:reference].blank?
+              xml.tag! 'n2:AdditionalBillingCycles', options[:additional_billing_cycles] unless options[:additional_billing_cycles].blank?
+              xml.tag! 'n2:MaxFailedPayments', options[:max_failed_payments] unless options[:max_failed_payments].blank?
+              xml.tag! 'n2:AutoBillOutstandingAmount', options[:auto_bill_outstanding] ? 'AddToNextBilling' : 'NoAutoBill'
+              if options.has_key?(:amount)
+                xml.tag! 'n2:Amount', amount(options[:amount]), 'currencyID' => options[:currency] || 'USD'
+              end
+              if options.has_key?(:tax_amount)
+                xml.tag! 'n2:TaxAmount', amount(options[:tax_amount] || 0), 'currencyID' => options[:currency] || 'USD'
+              end
+              if options.has_key?(:start_date)
+                xml.tag! 'n2:BillingStartDate', (options[:start_date].is_a?(Date) ? options[:start_date].to_time : options[:start_date]).utc.iso8601
+              end
+            end
+          end
+        end
+
+        xml.target!
+      end
+
+      def build_manage_profile_request(profile_id, action, options)
+        xml = Builder::XmlMarkup.new :indent => 2
+        xml.tag! 'ManageRecurringPaymentsProfileStatusReq', 'xmlns' => PAYPAL_NAMESPACE do
+          xml.tag! 'ManageRecurringPaymentsProfileStatusRequest', 'xmlns:n2' => EBAY_NAMESPACE do
+            xml.tag! 'n2:Version', API_VERSION
+            xml.tag! 'n2:ManageRecurringPaymentsProfileStatusRequestDetails' do
+              xml.tag! 'ProfileID', profile_id
+              xml.tag! 'n2:Action', action
+              xml.tag! 'n2:Note', options[:note] unless options[:note].blank?
+            end
+          end
+        end
+
+        xml.target!
+      end
+
       def build_reauthorize_request(money, authorization, options)
         xml = Builder::XmlMarkup.new
         
@@ -326,11 +456,11 @@ module ActiveMerchant #:nodoc:
         response = parse(action, ssl_post(endpoint_url, build_request(request), @options[:headers]))
        
         build_response(successful?(response), message_from(response), response,
-    	    :test => test?,
-    	    :authorization => authorization_from(response),
-    	    :fraud_review => fraud_review?(response),
-    	    :avs_result => { :code => response[:avs_code] },
-    	    :cvv_result => response[:cvv2_code]
+          :test => test?,
+          :authorization => authorization_from(response),
+          :fraud_review => fraud_review?(response),
+          :avs_result => { :code => response[:avs_code] },
+          :cvv_result => response[:cvv2_code]
         )
       end
       

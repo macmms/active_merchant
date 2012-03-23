@@ -18,6 +18,7 @@ module ActiveMerchant #:nodoc:
       self.homepage_url = 'http://example.com'
       self.display_name = 'Bogus'
       
+      
       def authorize(money, credit_card_or_reference, options = {})
         money = amount(money)
         case normalize(credit_card_or_reference)
@@ -128,6 +129,17 @@ module ActiveMerchant #:nodoc:
         end
       end
 
+      def credit_card_detail(reference)
+        Response.new(true, SUCCESS_MESSAGE, 
+          {:credit_card => {
+            "type"       => "visa",
+            "first_name" => "test_first_name",
+            "last_name"  => "test_last_name",
+            "number"     => "************1234",
+            "month"       => "02",
+            "year"      => "2017"
+          }}, :test =>true )
+      end
       private
 
       def normalize(credit_card_or_reference)

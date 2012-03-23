@@ -82,6 +82,10 @@ module ActiveMerchant #:nodoc:
         @options[:test] || Base.gateway_mode == :test
       end
 
+      def store(credit_card, options = {})
+        pp "in paypal store"
+      end
+
       def create_profile(token, options = {})
         requires!(options, :description, :start_date, :frequency, :amount)
 

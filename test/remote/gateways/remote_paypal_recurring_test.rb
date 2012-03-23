@@ -65,7 +65,7 @@ class PaypalRecurringTest < Test::Unit::TestCase
 
     response = @gateway.create_profile( nil, options)
     profileID = response.params['ProfileID']
-    response2 = @gateway.suspend_profile( profileID, options )
+    response2 = @gateway.suspend_profile profileID 
     assert "Suspend", response.params['ProfileID']
   end
 
@@ -79,8 +79,8 @@ class PaypalRecurringTest < Test::Unit::TestCase
 
     response = @gateway.create_profile( nil, options)
     profileID = response.params['ProfileID']
-    @gateway.suspend_profile( profileID, options )
-    response = @gateway.get_profile_details( profileID)
+    @gateway.suspend_profile( profileID )
+    response = @gateway.get_profile_details profileID
     assert response.params['CreditCard']
     assert_equal "2844", response.params['CreditCard']['CreditCardNumber']
   end

@@ -43,18 +43,37 @@ module ActiveMerchant #:nodoc:
         end
       end
  
-      def recurring(money, credit_card_or_reference, options = {})
-        money = amount(money)
-        case normalize(credit_card_or_reference)
+      def create_profile(options = {})
+        
+        case normalize( options[:credit_card])
         when '1'
-          Response.new(true, SUCCESS_MESSAGE, {:paid_amount => money}, :test => true)
+          Response.new(true, SUCCESS_MESSAGE, {:ProfileID => "pid1"}, :test => true)
         when '2'
-          Response.new(false, FAILURE_MESSAGE, {:paid_amount => money, :error => FAILURE_MESSAGE },:test => true)
+          Response.new(false, FAILURE_MESSAGE, {:error => FAILURE_MESSAGE },:test => true)
         else
           raise Error, ERROR_MESSAGE
         end
       end
  
+      def update_profile(profile_id, options = {})
+        case profile_id
+        when "pid1"
+          Response.new(true, SUCCESS_MESSAGE, {:ProfileID => "pid1"}, :test => true)
+        else 
+          raise Error, ERROR_MESSAGE
+        end
+      end
+
+      def suspend_profile(profile_id, options = {})
+        case profile_id
+        when "pid1"
+          Response.new(true, SUCCESS_MESSAGE, {:ProfileID => "pid1"}, :test => true)
+        else 
+          raise Error, ERROR_MESSAGE
+        end
+      end
+
+
       def credit(money, credit_card_or_reference, options = {})
         if credit_card_or_reference.is_a?(String)
           deprecated CREDIT_DEPRECATION_MESSAGE

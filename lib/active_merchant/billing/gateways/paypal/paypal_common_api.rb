@@ -104,6 +104,10 @@ module ActiveMerchant #:nodoc:
         commit 'ManageRecurringPaymentsProfileStatus', build_manage_profile_request(profile_id, 'Suspend', options)
       end
 
+      def cancel_profile(profile_id, options = {})
+        commit 'ManageRecurringPaymentsProfileStatus', build_manage_profile_request(profile_id, 'Cancel', options)
+      end
+
       def reauthorize(money, authorization, options = {})
         commit 'DoReauthorization', build_reauthorize_request(money, authorization, options)
       end

@@ -44,7 +44,7 @@ module ActiveMerchant #:nodoc:
       end
  
       def create_profile(options = {})
-        
+
         case normalize( options[:credit_card])
         when '1'
           Response.new(true, SUCCESS_MESSAGE, {:ProfileID => "pid1"}, :test => true)
@@ -107,11 +107,11 @@ module ActiveMerchant #:nodoc:
         money = amount(money)
         case reference
         when '1'
-          raise Error, CAPTURE_ERROR_MESSAGE
+          Response.new(true, SUCCESS_MESSAGE, {:paid_amount => money}, :test => true)          
         when '2'
           Response.new(false, FAILURE_MESSAGE, {:paid_amount => money, :error => FAILURE_MESSAGE }, :test => true)
         else
-          Response.new(true, SUCCESS_MESSAGE, {:paid_amount => money}, :test => true)
+          raise Error, CAPTURE_ERROR_MESSAGE
         end
       end
 

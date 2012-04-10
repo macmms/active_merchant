@@ -14,7 +14,17 @@ module ActiveMerchant #:nodoc:
       def store(credit_card, options = {})
         requires!(options, :ip)
         options[:credit_card] = credit_card
-        create_profile(nil, options)
+        response = create_profile(nil, options)
+
+        if response.success?
+          response_suspend = gateway.suspend_profile(response_create.params['ProfileID'])
+
+          if !response_suspend.success?
+            raise Error, "exception happened when storing credit_card to paypal"
+          end
+        end
+
+        resonse
       end
 
       def authorize(money, credit_card_or_referenced_id, options = {})

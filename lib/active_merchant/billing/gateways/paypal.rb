@@ -17,7 +17,7 @@ module ActiveMerchant #:nodoc:
         response = create_profile(nil, options)
 
         if response.success?
-          response_suspend = suspend_profile(response_create.params['ProfileID'])
+          response_suspend = suspend_profile(response.params['ProfileID'])
 
           if !response_suspend.success?
             raise Error, "exception happened when storing credit_card to paypal"

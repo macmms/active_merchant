@@ -82,7 +82,9 @@ module ActiveMerchant #:nodoc:
         @options[:test] || Base.gateway_mode == :test
       end
 
-
+      def credit_card_detail(reference)
+        get_profile_details(reference).params['CreditCard']    
+      end
 
       def create_profile(token, options = {})
         requires!(options, :description, :start_date, :frequency, :amount)

@@ -27,6 +27,8 @@ module ActiveMerchant #:nodoc:
         resonse
       end
 
+
+
       def authorize(money, credit_card_or_referenced_id, options = {})
         requires!(options, :ip)
         commit define_transaction_type(credit_card_or_referenced_id), build_sale_or_authorization_request('Authorization', money, credit_card_or_referenced_id, options)

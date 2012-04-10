@@ -24,7 +24,7 @@ module ActiveMerchant #:nodoc:
           end
         end
 
-        resonse
+        response
       end
 
 

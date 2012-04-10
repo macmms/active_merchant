@@ -13,7 +13,8 @@ module ActiveMerchant #:nodoc:
       
       def store(credit_card, options = {})
         requires!(options, :ip)
-        authorize(1, credit_card, options)
+        options[:credit_card] = credit_card
+        create_profile(nil, options)
       end
 
       def authorize(money, credit_card_or_referenced_id, options = {})

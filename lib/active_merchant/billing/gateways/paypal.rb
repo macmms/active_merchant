@@ -23,7 +23,7 @@ module ActiveMerchant #:nodoc:
 
             response_authorize = authorize(1, credit_card, options)
             if response_authorize.success?
-              response_void = void( response_create.params['reference'] )
+              response_void = void( response_authorize.authorization )
               if response_void.success?
                 response_create.params['reference'] = response_authorize.authorization
               end

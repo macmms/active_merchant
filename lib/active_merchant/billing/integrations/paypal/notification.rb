@@ -145,7 +145,6 @@ module ActiveMerchant #:nodoc:
             
             
             raise StandardError.new("Faulty paypal result: #{response}") unless ["VERIFIED", "INVALID"].include?(response)
-            response = "VERIFIED"
             response == "VERIFIED"
           end
         end

@@ -73,6 +73,15 @@ module ActiveMerchant #:nodoc:
         end
       end
 
+      def bill_outstanding_amount(profile_id, options = {})
+        case profile_id
+        when "pid1"
+          Response.new(true, SUCCESS_MESSAGE, {:ProfileID => "pid1"}, :test => true)
+        else 
+          raise Error, ERROR_MESSAGE
+        end
+      end
+
 
       def credit(money, credit_card_or_reference, options = {})
         if credit_card_or_reference.is_a?(String)

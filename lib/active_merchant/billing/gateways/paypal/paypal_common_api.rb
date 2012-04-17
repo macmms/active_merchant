@@ -112,8 +112,8 @@ module ActiveMerchant #:nodoc:
           commit 'DoReauthorization', build_reauthorize_request(money, authorization, options)
         end
 
-        def bill_outstanding_balance(profile_id, options = {})
-          commit 'BillOutstandingBalance', build_bill_outstanding_balance_request(profile_id, options)
+        def bill_outstanding_amount(profile_id, options = {})
+          commit 'BillOutstandingAmount', build_bill_outstanding_amount_request(profile_id, options)
         end
 
         def capture(money, authorization, options = {})
@@ -260,7 +260,7 @@ module ActiveMerchant #:nodoc:
           xml.target!
         end
 
-        def build_bill_outstanding_balance_request(profile_id, options)
+        def build_bill_outstanding_amount_request(profile_id, options)
           xml = Builder::XmlMarkup.new
 
           xml.tag! 'BillOutstandingAmountReq', 'xmlns' => PAYPAL_NAMESPACE do

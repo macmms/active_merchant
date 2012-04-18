@@ -159,42 +159,26 @@ module ActiveMerchant #:nodoc:
 
       def credit_card_detail(reference)
 
-        one_week_before = Date.today - 1.week
+        Response.new(true, SUCCESS_MESSAGE,
+          {:credit_card => {
+            "type"       => "visa",
+            "first_name" => "test_first_name",
+            "last_name"  => "test_last_name",
+            "number"     => "************1234",
+            "month"       => "02",
+            "year"      => "2017"
+          }}, :test =>true )
+      end
 
-        case reference
-        when '1'
-          Response.new(true, SUCCESS_MESSAGE,
-            {:credit_card => {
-              "type"       => "visa",
-              "first_name" => "test_first_name",
-              "last_name"  => "test_last_name",
-              "number"     => "************1234",
-              "month"       => one_week_before.month.to_s,
-              "year"      => one_week_before.year.to_s
-            }}, :test =>true )
-          else
-            Response.new(true, SUCCESS_MESSAGE,
-              {:credit_card => {
-                "type"       => "visa",
-                "first_name" => "test_first_name",
-                "last_name"  => "test_last_name",
-                "number"     => "************1234",
-                "month"       => "02",
-                "year"      => "2017"
-              }}, :test =>true )
-            
-          end
-        end
+      private
 
-        private
-
-        def normalize(credit_card_or_reference)
-          if credit_card_or_reference.respond_to?(:number)
-            credit_card_or_reference.number
-          else
-            credit_card_or_reference.to_s
-          end
+      def normalize(credit_card_or_reference)
+        if credit_card_or_reference.respond_to?(:number)
+          credit_card_or_reference.number
+        else
+          credit_card_or_reference.to_s
         end
       end
     end
   end
+end

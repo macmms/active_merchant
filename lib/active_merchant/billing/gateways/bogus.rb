@@ -159,6 +159,7 @@ module ActiveMerchant #:nodoc:
 
       def credit_card_detail(reference)
 
+        one_week_before = Date.today - 1.one_week
 
         case reference
         when '1'
@@ -168,8 +169,8 @@ module ActiveMerchant #:nodoc:
               "first_name" => "test_first_name",
               "last_name"  => "test_last_name",
               "number"     => "************1234",
-              "month"       => "02",
-              "year"      => "2012"
+              "month"       => one_week_before.month.to_s,
+              "year"      => one_week_before.year.to_s
             }}, :test =>true )
           else
             Response.new(true, SUCCESS_MESSAGE,

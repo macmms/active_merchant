@@ -159,7 +159,7 @@ module ActiveMerchant #:nodoc:
 
       def credit_card_detail(reference)
 
-        one_week_before = Date.today - 1.one_week
+        one_week_before = Date.today - 1.week
 
         case reference
         when '1'

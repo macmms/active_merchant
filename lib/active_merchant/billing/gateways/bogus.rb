@@ -73,6 +73,18 @@ module ActiveMerchant #:nodoc:
         end
       end
 
+      def remove_profile(profile_id, options = {})
+        case profile_id
+        when '1'
+          Response.new(true, SUCCESS_MESSAGE, :test => true)
+        when '2'
+          Response.new(false, FAILURE_MESSAGE, {:error => FAILURE_MESSAGE }, :test => true)
+        else
+          raise Error, ERROR_MESSAGE
+        end
+      end
+
+
       def bill_outstanding_amount(profile_id, options = {})
         case profile_id
         when "pid1"
@@ -139,6 +151,17 @@ module ActiveMerchant #:nodoc:
         case normalize(credit_card_or_reference)
         when '1'
           Response.new(true, SUCCESS_MESSAGE, {:billingid => '1'}, :test => true, :authorization => AUTHORIZATION)
+        when '2'
+          Response.new(false, FAILURE_MESSAGE, {:billingid => nil, :error => FAILURE_MESSAGE }, :test => true)
+        else
+          raise Error, ERROR_MESSAGE
+        end
+      end
+
+      def remove_credit_card(reference, options = {})
+        case reference
+        when '1'
+          Response.new(true, SUCCESS_MESSAGE, :test => true)
         when '2'
           Response.new(false, FAILURE_MESSAGE, {:billingid => nil, :error => FAILURE_MESSAGE }, :test => true)
         else

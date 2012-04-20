@@ -34,7 +34,13 @@ module ActiveMerchant #:nodoc:
         response_create
       end
 
+      def remove_credit_card(reference, options = {})
+        cancel_profile(reference, options)
+      end
 
+      def remove_profile(reference, options = {})
+        cancel_profile(reference, options)
+      end
 
       def authorize(money, credit_card_or_referenced_id, options = {})
         requires!(options, :ip)

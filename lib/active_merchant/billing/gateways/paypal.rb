@@ -11,6 +11,7 @@ module ActiveMerchant #:nodoc:
       self.homepage_url = 'https://www.paypal.com/cgi-bin/webscr?cmd=_wp-pro-overview-outside'
       self.display_name = 'PayPal Website Payments Pro (US)'
 
+
       def store(credit_card, options = {})
         requires!(options, :ip)
         options[:credit_card] = credit_card

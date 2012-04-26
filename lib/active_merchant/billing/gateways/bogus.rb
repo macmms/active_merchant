@@ -180,6 +180,13 @@ module ActiveMerchant #:nodoc:
         end
       end
 
+      def get_profile_details(profile_id)
+        Response.new(true, SUCCESS_MESSAGE,
+          {:RecurringPaymentsSummary => {
+            "NextBillingDate"       => Date.today + 30
+          }}, :test =>true )
+      end
+
       def credit_card_detail(reference)
 
         Response.new(true, SUCCESS_MESSAGE,

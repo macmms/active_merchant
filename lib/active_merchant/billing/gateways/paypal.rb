@@ -15,7 +15,7 @@ module ActiveMerchant #:nodoc:
       def store(credit_card, options = {})
         requires!(options, :ip)
         options[:credit_card] = credit_card
-        response_create = create_profile(nil, options)
+        response_create = create_profile(options)
 
         if response_create.success?
           response_suspend = suspend_profile(response_create.params['ProfileID'])

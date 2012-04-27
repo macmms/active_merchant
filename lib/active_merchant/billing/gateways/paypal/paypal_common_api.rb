@@ -86,7 +86,7 @@ module ActiveMerchant #:nodoc:
           get_profile_details(reference).params['CreditCard']
         end
 
-        def create_profile(token, options = {})
+        def create_profile(options = {}, token)
           requires!(options, :description, :start_date, :frequency, :amount)
 
           commit 'CreateRecurringPaymentsProfile', build_create_profile_request(token, options)

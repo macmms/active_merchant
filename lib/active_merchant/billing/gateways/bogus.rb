@@ -182,7 +182,7 @@ module ActiveMerchant #:nodoc:
 
       def get_profile_details(profile_id)
         Response.new(true, SUCCESS_MESSAGE,
-          {:RecurringPaymentsSummary => {
+          {"RecurringPaymentsSummary" => {
             "NextBillingDate"       => Date.today + 30
           }}, :test =>true )
       end

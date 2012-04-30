@@ -11,11 +11,14 @@ module ActiveMerchant #:nodoc:
       self.homepage_url = 'https://www.paypal.com/cgi-bin/webscr?cmd=_wp-pro-overview-outside'
       self.display_name = 'PayPal Website Payments Pro (US)'
 
+      def create_recurring_profile( options = {})
+        create_profile(nil, options)
+      end
 
       def store(credit_card, options = {})
         requires!(options, :ip)
         options[:credit_card] = credit_card
-        response_create = create_profile(options)
+        response_create = create_profile(nil, options)
 
         if response_create.success?
           response_suspend = suspend_profile(response_create.params['ProfileID'])

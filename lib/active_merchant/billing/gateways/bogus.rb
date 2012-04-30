@@ -43,7 +43,7 @@ module ActiveMerchant #:nodoc:
         end
       end
 
-      def create_profile(options = {})
+      def create_recurring_profile(options = {})
 
         case normalize( options[:credit_card])
         when '1'

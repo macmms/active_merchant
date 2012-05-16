@@ -43,54 +43,63 @@ class PaypalRecurringTest < Test::Unit::TestCase
   # can not test bill outstanding amount since I can't create a recurring profile
   # with outstaing balance.
   def test_get_profile_detail
-    response = @gateway.get_profile_details "I-JP3KRLVU8C4B"
-    print response.params["RecurringPaymentsSummary"]["NextBillingDate"].inspect
+    response = @gateway.get_profile_details "I-UK579PWHGLGF"
+    print response.params.inspect
   end
 
-  def test_successful_create_profile
-    options = { :description => "this is test description",
-                :credit_card => @creditcard,
-                :start_date => Time.parse("2017-02-17 00:00:00").getutc,
-                :frequency => 1,
-                :amount => 1 }
+  # def test_update_amount
+  #   options = {
+  #     :amount => 9999,
+  #   }
+
+  #   response = @gateway.update_profile "I-UK579PWHGLGF", options
+  #   print response.params.inspect
+  # end
+
+  # def test_successful_create_profile
+  #   options = { :description => "this is test description",
+  #               :credit_card => @creditcard,
+  #               :start_date => Time.parse("2017-02-17 00:00:00").getutc,
+  #               :frequency => 1,
+  #               :amount => 1 }
 
 
-    response = @gateway.create_profile( nil, options)
-    assert_success response
-    assert response.params['ProfileID']
-    assert_equal "ActiveProfile", response.params['ProfileStatus']
+  #   response = @gateway.create_profile( nil, options)
+  #   assert_success response
+  #   assert response.params['ProfileID']
+  #   assert_equal "ActiveProfile", response.params['ProfileStatus']
 
-  end
+  # end
 
-  def test_successful_suspend_profile
-    options = { :description => "this is test description",
-                :credit_card => @creditcard,
-                :start_date => Time.parse("2017-02-17 00:00:00").getutc,
-                :frequency => 1,
-                :amount => 1 }
-
-
-    response = @gateway.create_profile( nil, options)
-    profileID = response.params['ProfileID']
-    response2 = @gateway.suspend_profile profileID 
-    assert "Suspend", response.params['ProfileID']
-  end
-
-  def test_successful_get_credit_card_info_after_suspend
-    options = { :description => "this is test description",
-                :credit_card => @creditcard,
-                :start_date => Time.parse("2017-02-17 00:00:00").getutc,
-                :frequency => 1,
-                :amount => 1 }
+  # def test_successful_suspend_profile
+  #   options = { :description => "this is test description",
+  #               :credit_card => @creditcard,
+  #               :start_date => Time.parse("2017-02-17 00:00:00").getutc,
+  #               :frequency => 1,
+  #               :amount => 1 }
 
 
-    response = @gateway.create_profile( nil, options)
-    profileID = response.params['ProfileID']
-    @gateway.suspend_profile( profileID )
-    response = @gateway.get_profile_details profileID
-    assert response.params['CreditCard']
-    assert_equal "2844", response.params['CreditCard']['CreditCardNumber']
-  end
+  #   response = @gateway.create_profile( nil, options)
+  #   profileID = response.params['ProfileID']
+  #   response2 = @gateway.suspend_profile profileID 
+  #   assert "Suspend", response.params['ProfileID']
+  # end
+
+  # def test_successful_get_credit_card_info_after_suspend
+  #   options = { :description => "this is test description",
+  #               :credit_card => @creditcard,
+  #               :start_date => Time.parse("2017-02-17 00:00:00").getutc,
+  #               :frequency => 1,
+  #               :amount => 1 }
+
+
+  #   response = @gateway.create_profile( nil, options)
+  #   profileID = response.params['ProfileID']
+  #   @gateway.suspend_profile( profileID )
+  #   response = @gateway.get_profile_details profileID
+  #   assert response.params['CreditCard']
+  #   assert_equal "2844", response.params['CreditCard']['CreditCardNumber']
+  # end
 
 
 end

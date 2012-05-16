@@ -3,6 +3,7 @@ module ActiveMerchant #:nodoc:
     # Bogus Gateway
     class BogusGateway < Gateway
       AUTHORIZATION = '1'
+      AUTHORIZATION_CAPTURE_FAILED_REFERENCE = '3'
 
       SUCCESS_MESSAGE = "Bogus Gateway: Forced success"
       FAILURE_MESSAGE = "Bogus Gateway: Forced failure"
@@ -24,6 +25,8 @@ module ActiveMerchant #:nodoc:
         case normalize(credit_card_or_reference)
         when '1'
           Response.new(true, SUCCESS_MESSAGE, {:authorized_amount => money}, :test => true, :authorization => AUTHORIZATION )
+        when '3'
+          Response.new(true, SUCCESS_MESSAGE, {:authorized_amount => money}, :test => true, :authorization => AUTHORIZATION_CAPTURE_FAILED_REFERENCE )
         when '2'
           Response.new(false, FAILURE_MESSAGE, {:authorized_amount => money, :error => FAILURE_MESSAGE }, :test => true)
         else
@@ -131,6 +134,8 @@ module ActiveMerchant #:nodoc:
           Response.new(true, SUCCESS_MESSAGE, {:paid_amount => money}, :test => true)
         when '2'
           Response.new(false, FAILURE_MESSAGE, {:paid_amount => money, :error => FAILURE_MESSAGE }, :test => true)
+        when '3'
+            Response.new(false, FAILURE_MESSAGE, {:paid_amount => money, :error => FAILURE_MESSAGE }, :test => true)
         else
           raise Error, CAPTURE_ERROR_MESSAGE
         end

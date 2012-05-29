@@ -201,7 +201,14 @@ module ActiveMerchant #:nodoc:
             "last_name"  => "test_last_name",
             "number"     => "************1234",
             "month"       => "02",
-            "year"      => "2017"
+            "year"      => "2017",
+            "billing_address" => {
+              "address1" => "test_address1",
+              "city" => "test_city",
+              "state" => "test_state",
+              "country" => "test_country",
+              "zip_code" => "zip_code"
+            }
           }}, :test =>true )
       end
 

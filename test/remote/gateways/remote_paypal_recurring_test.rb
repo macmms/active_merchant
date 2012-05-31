@@ -43,7 +43,7 @@ class PaypalRecurringTest < Test::Unit::TestCase
   # can not test bill outstanding amount since I can't create a recurring profile
   # with outstaing balance.
   def test_get_profile_detail
-    response = @gateway.get_profile_details "I-UK579PWHGLGF"
+    response = @gateway.get_profile_details "I-4649JHRS4DMW"
     print response.params.inspect
   end
 

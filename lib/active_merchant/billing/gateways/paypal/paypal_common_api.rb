@@ -220,7 +220,7 @@ module ActiveMerchant #:nodoc:
               xml.tag! 'n2:UpdateRecurringPaymentsProfileRequestDetails' do
                 xml.tag! 'ProfileID', profile_id
                 if options[:credit_card]
-                  add_credit_card(xml, options[:credit_card], options[:address], options)
+                  add_credit_card(xml, options[:credit_card], (options[:billing_address] || options[:address]), options)
                 end
                 xml.tag! 'n2:Note', options[:note] unless options[:note].blank?
                 xml.tag! 'n2:Description', options[:description] unless options[:description].blank?
